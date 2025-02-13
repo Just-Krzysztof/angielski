@@ -11,14 +11,16 @@ import {
 import { WordsService } from './words.service';
 import { Word } from './word.entity';
 import { FindTranslationDto } from './dto/find-translation.dto';
+import { CreateWordDto } from './dto/create-word.dto';
 
 @Controller('words')
 export class WordsController {
   constructor(private readonly wordsService: WordsService) {}
 
   @Post()
-  async create(@Body() word: Partial<Word>) {
-    return this.wordsService.create(word as Word);
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async create(@Body() createWordDto: CreateWordDto) {
+    return this.wordsService.create(createWordDto, createWordDto.userId);
   }
 
   @Get()
@@ -34,8 +36,6 @@ export class WordsController {
   @Post('search')
   @UsePipes(new ValidationPipe({ transform: true }))
   async findByTranslation(@Body() searchData: FindTranslationDto) {
-    console.log('searchData', searchData);
-
     return this.wordsService.findByTranslation(searchData.en, searchData.pl);
   }
 

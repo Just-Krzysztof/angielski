@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import configuration from './config/configuration';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { WordsModule } from './words/words.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { WordsModule } from './words/words.module';
       inject: [ConfigService],
     }),
     WordsModule,
+    UsersModule,
   ],
   controllers: [],
   providers: [],

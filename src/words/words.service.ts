@@ -7,17 +7,41 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Word } from './word.entity';
+import { User } from '../users/user.entity';
 
 @Injectable()
 export class WordsService {
   constructor(
     @InjectRepository(Word)
     private wordsRepository: Repository<Word>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
   ) {}
 
-  async create(word: Word): Promise<Word> {
+  async create(word: Partial<Word>, userId: number): Promise<Word> {
+    if (!word.en || !word.pl) {
+      throw new BadRequestException('Both en and pl arrays are required');
+    }
+
+    if (!userId) {
+      throw new BadRequestException('Required user id, got nothing');
+    }
+
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+    });
+
+    if (!user?.role) {
+      throw new NotFoundException(`User with id ${userId} haven't permissions`);
+    }
+
+    if (!user) {
+      throw new NotFoundException(`User with id ${userId} not found`);
+    }
+
     const normalizedWord = {
       ...word,
+      userId,
       en: word.en.map((w) => w.toLowerCase()),
       pl: word.pl.map((w) => w.toLowerCase()),
     };
@@ -40,7 +64,9 @@ export class WordsService {
   }
 
   async findAll(): Promise<Word[]> {
-    return this.wordsRepository.find();
+    return this.wordsRepository.find({
+      relations: ['user'],
+    });
   }
 
   async findById(id: number): Promise<Word> {

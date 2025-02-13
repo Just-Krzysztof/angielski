@@ -1,6 +1,7 @@
 import { DataSource } from 'typeorm';
 import { config } from 'dotenv';
 import { Word } from '../words/word.entity';
+import { User } from '../users/user.entity';
 
 config({
   path: '.env',
@@ -9,12 +10,6 @@ config({
   override: false,
 });
 
-console.log(process.env.DB_HOST);
-console.log(process.env.DB_PORT);
-console.log(process.env.DB_USERNAME);
-console.log(process.env.DB_PASSWORD);
-console.log(process.env.DB_NAME);
-
 export default new DataSource({
   type: 'postgres',
   host: process.env.DB_HOST,
@@ -22,7 +17,7 @@ export default new DataSource({
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  entities: [Word],
+  entities: [Word, User],
   migrations: [__dirname + '/../migrations/*.ts'],
   synchronize: false,
 });
