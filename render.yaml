@@ -1,14 +1,17 @@
 services:
   - type: web
     name: angielski-api
-    env: node
+    runtime: node
     buildCommand: pnpm install && pnpm build
     startCommand: pnpm start:prod
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
-        value: 3000
+        value: "3000"
+      - key: DATABASE_URL
+        sync: false
+    autoDeploy: true
     buildFilter:
       paths:
         - src/**

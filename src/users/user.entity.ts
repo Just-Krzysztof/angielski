@@ -5,7 +5,7 @@ import {
   BeforeInsert,
   OneToMany,
 } from 'typeorm';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { Word } from '../words/word.entity';
 
 @Entity()
